@@ -10,15 +10,68 @@ timer = pygame.time.Clock()     #set the game timer, how long the game has been 
 fps = 60     #set a limit on the fps of the game
 font = pygame.font.Font("freesansbold.ttf",20)      #set the basic font-family and the text size
 level = boards
-color = "purple"
+color = "hotpink"
 PI = math.pi
 player_images = []
 for i in range(1,5):
 	player_images.append(pygame.transform.scale(pygame.image.load(f'Pac-img/{i}.png'), (45, 45)))       #taking the images and making a list into the a 45 by 45 square
+	red_ghost = pygame.transform.scale(pygame.image.load(f'Ghost/red.png'),(45,45))
+	pink_ghost = pygame.transform.scale(pygame.image.load(f'Ghost/pink.png'), (45, 45))
+	blue_ghost = pygame.transform.scale(pygame.image.load(f'Ghost/blue.png'), (45, 45))
+	orange_ghost = pygame.transform.scale(pygame.image.load(f'Ghost/orange.png'), (45, 45))
+	poweredup_ghost = pygame.transform.scale(pygame.image.load(f'Ghost/powerup.png'), (45, 45))
+	dead_ghost = pygame.transform.scale(pygame.image.load(f'Ghost/dead.png'), (45, 45))
 player_x = 450
 player_y = 663
+red_ghost_x = 56
+red_ghost_y = 58
+red_ghost_direction = 0
+pink_ghost_x = 440
+pink_ghost_y = 438
+pink_ghost_direction = 0
+blue_ghost_x = 440
+blue_ghost_y = 438
+blue_ghost_direction = 0
+orange_ghost_x = 440
+orange_ghost_y = 438
+orange_ghost_direction = 0
+target = [(player_x, player_y),(player_x, player_y),(player_x, player_y),(player_x, player_y)]
+red_dead = False
+pink_dead = False
+blue_dead = False
+orange_dead= False
+red_box = False
+pink_box = False
+blue_box = False
+orange_box= False
+ghost_speed = 2
 flicker = False
 lives = 3
+
+
+class Class:
+	def __init__(self, x_cord, y_cord, target, speed, img, direct, dead, box, id):
+		self.x_pos = x_cord
+		self.y_pos = y_cord
+		self.x = self.x_pos+22
+		self.y = self.y_pos+22
+		self.target = target
+		self.speed = speed
+		self.img = img
+		self.box = box
+		self.id = id
+		self.turns, self.box = self.check_collisins()
+		self.rect = self.draw()
+
+	def draw(self):
+		if (not powerup and not self.dead) or (eaten_ghost[self.id] and powerup and not self.dead):
+			screen.blit(self.img, (self.x_pos, self.y_pos))
+		elif powerup and not self.dead and not eaten_ghost[self.id]:
+			screen.blit(poweredup_ghost, (self.x_pos, self.y_pos))
+		else:
+			screen.blit(dead_ghost, (self.x_pos, self.y_pos))
+		ghost_rect = pygame.rect.Rect((self.center_x - 18, self.center_y - 18), (36, 36))
+		return ghost_rect
 
 def draw_misc():
 	score_text = font.render(f'Score: {score}', True, color)
